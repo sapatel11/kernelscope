@@ -22,6 +22,10 @@ torch::Tensor residual_rmsnorm_cuda(
     const torch::Tensor& weight,
     double epsilon);
 
+torch::Tensor swiglu_cuda(
+    const torch::Tensor& gate,
+    const torch::Tensor& value);
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
@@ -58,4 +62,11 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
         py::arg("weight"),
         py::arg("epsilon"),
         "Warp-reduced CUDA residual + RMSNorm implementation");
+
+    module.def(
+        "swiglu_cuda",
+        &swiglu_cuda,
+        py::arg("gate"),
+        py::arg("value"),
+        "Fused CUDA SwiGLU implementation");
 }
