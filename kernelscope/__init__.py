@@ -5,6 +5,7 @@ from .cuda import (
     residual_rmsnorm_cuda,
     residual_rmsnorm_cuda_naive,
     residual_rmsnorm_cuda_vectorized,
+    residual_rmsnorm_cuda_warp,
     swiglu_cuda,
 )
 from .reference import residual_rmsnorm_reference, swiglu_reference
@@ -17,6 +18,7 @@ __all__ = [
     "residual_rmsnorm_cuda",
     "residual_rmsnorm_cuda_naive",
     "residual_rmsnorm_cuda_vectorized",
+    "residual_rmsnorm_cuda_warp",
     "residual_rmsnorm_reference",
     "swiglu_cpu",
     "swiglu_cuda",
