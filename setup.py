@@ -38,6 +38,7 @@ setup(
                 "cpp/cpu_reference.cpp",
                 "cuda/rmsnorm_naive.cu",
                 "cuda/rmsnorm_fused.cu",
+                "cuda/swiglu_fused.cu",
             ],
             extra_compile_args={
                 "cxx": cxx_compile_args,
