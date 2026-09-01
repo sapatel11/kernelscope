@@ -22,6 +22,12 @@ torch::Tensor residual_rmsnorm_cuda(
     const torch::Tensor& weight,
     double epsilon);
 
+torch::Tensor residual_rmsnorm_cuda_vectorized(
+    const torch::Tensor& input,
+    const torch::Tensor& residual,
+    const torch::Tensor& weight,
+    double epsilon);
+
 torch::Tensor swiglu_cuda(
     const torch::Tensor& gate,
     const torch::Tensor& value);
@@ -62,6 +68,15 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
         py::arg("weight"),
         py::arg("epsilon"),
         "Warp-reduced CUDA residual + RMSNorm implementation");
+
+    module.def(
+        "residual_rmsnorm_cuda_vectorized",
+        &residual_rmsnorm_cuda_vectorized,
+        py::arg("input"),
+        py::arg("residual"),
+        py::arg("weight"),
+        py::arg("epsilon"),
+        "Experimental half2 vectorized CUDA residual + RMSNorm implementation");
 
     module.def(
         "swiglu_cuda",
