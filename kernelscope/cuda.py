@@ -26,3 +26,19 @@ def residual_rmsnorm_cuda_naive(
         weight,
         epsilon,
     )
+
+
+def residual_rmsnorm_cuda(
+    input_tensor: Tensor,
+    residual: Tensor,
+    weight: Tensor,
+    epsilon: float,
+) -> Tensor:
+    """Run the warp-reduced CUDA residual + RMSNorm implementation."""
+
+    return _C.residual_rmsnorm_cuda(
+        input_tensor,
+        residual,
+        weight,
+        epsilon,
+    )
