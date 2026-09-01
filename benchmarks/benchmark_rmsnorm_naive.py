@@ -2,6 +2,14 @@ from __future__ import annotations
 
 import platform
 import subprocess
+import sys
+from pathlib import Path
+
+# Running this file directly sets sys.path[0] to the benchmarks directory.
+# Add the repository root so the local kernelscope package is importable.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 import torch
 
