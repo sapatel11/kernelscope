@@ -42,3 +42,9 @@ def residual_rmsnorm_cuda(
         weight,
         epsilon,
     )
+
+
+def swiglu_cuda(gate: Tensor, value: Tensor) -> Tensor:
+    """Run the fused CUDA SwiGLU implementation."""
+
+    return _C.swiglu_cuda(gate, value)
