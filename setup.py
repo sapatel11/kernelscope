@@ -5,14 +5,24 @@ if operating_system == "nt" and "VSCMD_VER" in environ:
     # PyTorch's build helper refuses to risk activating a second MSVC toolchain.
     environ.setdefault("DISTUTILS_USE_SDK", "1")
 
+# Build specifically for the RTX 4060 / Ada target used by this project unless
+# the caller explicitly overrides the architecture list.
+environ.setdefault("TORCH_CUDA_ARCH_LIST", "8.9")
+
 from setuptools import find_packages, setup
-from torch.utils.cpp_extension import BuildExtension, CppExtension
+from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 
 
 if operating_system == "nt":
-    compile_args = ["/O2", "/std:c++20", "/Zc:preprocessor"]
+    cxx_compile_args = ["/O2", "/std:c++20", "/Zc:preprocessor"]
+    nvcc_compile_args = [
+        "-O2",
+        "-std=c++20",
+        "-Xcompiler=/Zc:preprocessor",
+    ]
 else:
-    compile_args = ["-O3", "-std=c++20"]
+    cxx_compile_args = ["-O3", "-std=c++20"]
+    nvcc_compile_args = ["-O3", "-std=c++20"]
 
 
 setup(
@@ -21,10 +31,20 @@ setup(
     description="Correctness-first CUDA transformer-kernel optimization study",
     packages=find_packages(),
     ext_modules=[
-        CppExtension(
+        CUDAExtension(
             name="kernelscope._C",
-            sources=["cpp/bindings.cpp", "cpp/cpu_reference.cpp"],
-            extra_compile_args=compile_args,
+            sources=[
+                "cpp/bindings.cpp",
+                "cpp/cpu_reference.cpp",
+                "cuda/rmsnorm_naive.cu",
+                "cuda/rmsnorm_fused.cu",
+                "cuda/rmsnorm_vectorized.cu",
+                "cuda/swiglu_fused.cu",
+            ],
+            extra_compile_args={
+                "cxx": cxx_compile_args,
+                "nvcc": nvcc_compile_args,
+            },
         )
     ],
     cmdclass={

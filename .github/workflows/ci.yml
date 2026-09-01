@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile Python sources
+        run: python -m compileall -q kernelscope benchmarks profiles tests
+
+      - name: Verify expected CUDA sources
+        shell: bash
+        run: |
+          test -f cuda/rmsnorm_naive.cu
+          test -f cuda/rmsnorm_fused.cu
+          test -f cuda/rmsnorm_vectorized.cu
+          test -f cuda/swiglu_fused.cu
+
+      - name: Explain CUDA test boundary
+        run: |
+          echo "Native CUDA builds, correctness tests, benchmarks, and Nsight profiling require an NVIDIA GPU."
+          echo "They are validated separately on the documented RTX 4060 Laptop GPU environment."
