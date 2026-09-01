@@ -16,6 +16,12 @@ torch::Tensor residual_rmsnorm_cuda_naive(
     const torch::Tensor& weight,
     double epsilon);
 
+torch::Tensor residual_rmsnorm_cuda(
+    const torch::Tensor& input,
+    const torch::Tensor& residual,
+    const torch::Tensor& weight,
+    double epsilon);
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
@@ -43,4 +49,13 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
         py::arg("weight"),
         py::arg("epsilon"),
         "Naive CUDA residual + RMSNorm baseline");
+
+    module.def(
+        "residual_rmsnorm_cuda",
+        &residual_rmsnorm_cuda,
+        py::arg("input"),
+        py::arg("residual"),
+        py::arg("weight"),
+        py::arg("epsilon"),
+        "Warp-reduced CUDA residual + RMSNorm implementation");
 }
